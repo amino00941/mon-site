@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DZSTORETELECOM</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Modale Voir Plus */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.6);
+    }
+
+    .modal-content {
+      background-color: #fff;
+      margin: 10% auto;
+      padding: 20px;
+      border-radius: 10px;
+      width: 80%;
+      max-width: 500px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.4);
+    }
+
+    .close {
+      float: right;
+      font-size: 24px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Barre de navigation -->
+  <nav class="navbar">
+    <div class="logo">DZSTORETELECOM</div>
+    <ul>
+      <li><a href="#accueil">Accueil</a></li>
+      <li><a href="#produits">Produits</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- Section Hero avec vidéo de fond -->
+  <section class="hero" id="accueil">
+    <video autoplay muted loop class="background-video">
+      <source src="iPhone 16 Pro _ Camera Control _ Apple.mp4" type="video/mp4">
+      Ton navigateur ne supporte pas la vidéo.
+    </video>
+    <h1>Bienvenue chez DZSTORETELECOM</h1>
+    <p>Découvrez notre nouvelle génération de produits haut de gamme.</p>
+    <button id="btn">Explorer</button>
+  </section>
+
+  <!-- Section Produits -->
+  <section class="products" id="produits">
+    <!-- iPhone 16 -->
+    <div class="product-card" data-nom="iPhone 16" data-prix="176400">
+      <img src="images.jpg" alt="iPhone 16">
+      <h3>iPhone 16</h3>
+      <p class="price">Prix a partir de : 176 400 DA</p>
+      <ul class="features">
+        <li>Écran 6.7" Super Retina XDR</li>
+        <li>Puce A18 Bionic</li>
+        <li>Triple capteur photo 48 MP</li>
+        <li>Face ID et 5G</li>
+        <li>iOS 18</li>
+      </ul>
+      <div class="product-buttons">
+        <button class="voir-plus">Voir plus</button>
+        <button class="ajouter-panier">Ajouter au panier</button>
+      </div>
+    </div>
+
+    <!-- MacBook Pro -->
+    <div class="product-card" data-nom="MacBook Pro" data-prix="367353">
+      <img src="hero_intro_endframe__e6khcva4hkeq_large-1.jpg" alt="MacBook Pro">
+      <h3>MacBook Pro</h3>
+      <p class="price">Prix a partir de : 367 353 DA</p>
+      <ul class="features">
+        <li>Écran 14" Liquid Retina XDR</li>
+        <li>Puce M3 Pro</li>
+        <li>Autonomie jusqu’à 18h</li>
+        <li>16 Go RAM - 1 To SSD</li>
+        <li>macOS Sonoma</li>
+      </ul>
+      <div class="product-buttons">
+        <button class="voir-plus">Voir plus</button>
+        <button class="ajouter-panier">Ajouter au panier</button>
+      </div>
+    </div>
+
+    <!-- Apple Watch -->
+    <div class="product-card" data-nom="Apple Watch" data-prix="80703">
+      <img src="Apple-Watch-Series-10-hero-240909_big.jpg.large.jpg" alt="Apple Watch">
+      <h3>Apple Watch</h3>
+      <p class="price">Prix a partir de : 80 703 DA</p>
+      <ul class="features">
+        <li>Écran Always-On Retina</li>
+        <li>Suivi santé & ECG</li>
+        <li>GPS + Cellular</li>
+        <li>Résistante à l’eau 50m</li>
+        <li>watchOS 10</li>
+      </ul>
+      <div class="product-buttons">
+        <button class="voir-plus">Voir plus</button>
+        <button class="ajouter-panier">Ajouter au panier</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Connexion / Inscription -->
+  <section class="auth-section" id="contact">
+    <h2>Se connecter ou créer un compte</h2>
+    <div class="auth-container">
+      <div class="auth-form">
+        <h3>Connexion</h3>
+        <form id="loginForm">
+          <input type="email" placeholder="Email" required>
+          <input type="password" placeholder="Mot de passe" required>
+          <button type="submit">Se connecter</button>
+        </form>
+      </div>
+
+      <div class="auth-form">
+        <h3>Créer un compte</h3>
+        <form id="registerForm">
+          <input type="text" placeholder="Nom complet" required>
+          <input type="email" placeholder="Email" required>
+          <input type="password" placeholder="Mot de passe" required>
+          <button type="submit">S'inscrire</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pied de page avec panier -->
+  <footer>
+    &copy; 2025 Apple Algeria - Tous droits réservés
+    <section class="panier-section">
+      <h2>Panier</h2>
+      <ul id="liste-panier"></ul>
+      <p>Total : <span id="total">0</span> DA</p>
+      <button id="valider-achat">Valider l'achat</button>
+    </section>
+  </footer>
+
+  <!-- Fenêtre Modale -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2 id="modal-title">Détails du produit</h2>
+      <div id="modal-details"></div>
+    </div>
+  </div>
+
+  <!-- Script JS -->
+  <script>
+    window.addEventListener('scroll', () => {
+      const cards = document.querySelectorAll('.product-card');
+      cards.forEach(card => {
+        const rect = card.getBoundingClientRect();
+        if (rect.top < window.innerHeight - 100) {
+          card.classList.add('appear');
+        }
+      });
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const btnExplorer = document.getElementById("btn");
+      const panierListe = document.getElementById("liste-panier");
+      const totalSpan = document.getElementById("total");
+      const btnValider = document.getElementById("valider-achat");
+      let total = 0;
+
+      const modal = document.getElementById('modal');
+      const modalTitle = document.getElementById('modal-title');
+      const modalDetails = document.getElementById('modal-details');
+      const modalClose = document.querySelector('.modal .close');
+
+      function ajouterAuPanier(nom, prix) {
+        const item = document.createElement("li");
+        item.textContent = `${nom} - ${prix.toLocaleString()} DA`;
+
+        item.addEventListener("click", () => {
+          if (confirm(`Supprimer "${nom}" du panier ?`)) {
+            panierListe.removeChild(item);
+            total -= prix;
+            totalSpan.textContent = total.toLocaleString();
+          }
+        });
+
+        panierListe.appendChild(item);
+        total += prix;
+        totalSpan.textContent = total.toLocaleString();
+      }
+
+      btnExplorer.addEventListener("click", () => {
+        alert("Bienvenue dans notre univers !");
+        document.getElementById("produits").scrollIntoView({ behavior: "smooth" });
+      });
+
+      document.getElementById('loginForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        alert('Connexion réussie (simulation) !');
+      });
+
+      document.getElementById('registerForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        alert('Compte créé avec succès (simulation) !');
+      });
+
+      document.querySelectorAll('.voir-plus').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const card = btn.closest('.product-card');
+          const nom = card.querySelector('h3').textContent;
+          const prix = card.dataset.prix;
+          const features = Array.from(card.querySelectorAll('.features li')).map(li => li.textContent);
+
+          modalTitle.textContent = nom;
+          modalDetails.innerHTML = 
+            `<p><strong>Prix :</strong> ${parseInt(prix).toLocaleString()} DA</p>
+            <ul>${features.map(f => `<li>${f}</li>`).join('')}</ul>`
+          ;
+
+          modal.style.display = 'block';
+        });
+      });
+
+      modalClose.addEventListener('click', () => {
+        modal.style.display = 'none';
+      });
+
+      window.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          modal.style.display = 'none';
+        }
+      });
+
+      document.querySelectorAll('.ajouter-panier').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const card = btn.closest('.product-card');
+          const nom = card.querySelector('h3').textContent;
+          const prixText = card.querySelector('.price').textContent;
+          const prix = parseInt(prixText.replace(/\D/g, ''));
+          ajouterAuPanier(nom, prix);
+        });
+      });
+
+      btnValider.addEventListener("click", () => {
+        if (total === 0) {
+          alert("Votre panier est vide.");
+        } else if (confirm(`Confirmer l’achat de ${total.toLocaleString()} DA ?`)) {
+          window.location.href = "paiement.html";
+        }
+      });
+    });
+  </script>
+  <button onclick="ajouterAuPanier('Apple Watch', 89000)">Acheter Apple Watch</button>
+
+  <script>
+    function ajouterAuPanier(nom, prix) {
+      localStorage.setItem('produitNom', nom);
+      localStorage.setItem('totalPanier', prix);
+      window.location.href = 'paiement.html';
+    }
+  </script>  
+</body>
+</html>

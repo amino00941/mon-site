@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Paiement - DZSTORETELECOM</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f3f3f3;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 400px;
+      margin: 80px auto;
+      background-color: white;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+    }
+
+    .logo-container img {
+      width: 50px;
+      margin: 0 10px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background-color: black;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+
+    button:hover {
+      background-color: #333;
+    }
+
+    .total {
+      margin-top: 15px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    a {
+      text-decoration: none;
+      color: #007bff;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Choisissez votre méthode de paiement</h2>
+    <div class="logo-container">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/4/41/Visa_Logo.png" alt="Visa">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.png" alt="MasterCard">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal">
+      <img src="Cib logo.png" alt="CIB" width="40">
+    </div>
+
+    <form id="formPaiement">
+      <input id="nom" type="text" placeholder="Nom sur la carte">
+      <input id="numero" type="text" placeholder="Numéro de carte">
+      <input id="expiration" type="text" placeholder="MM/AA">
+      <input id="cvv" type="text" placeholder="CVV">
+      <button type="submit">Payer</button>
+    </form>
+
+    <div class="total">Total à payer : <span id="montant">0</span> DA</div>
+
+    <p style="margin-top: 15px;">
+      <a href="index.html">← Retour à l’accueil</a>
+    </p>
+  </div>
+
+  <script>
+    // Charger le total depuis le localStorage
+    const total = localStorage.getItem("totalPanier") || 0;
+    document.getElementById("montant").textContent = parseInt(total).toLocaleString();
+
+    // Validation du formulaire de paiement
+    document.getElementById("formPaiement").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const nom = document.getElementById("nom").value.trim();
+      const numero = document.getElementById("numero").value.trim();
+      const expiration = document.getElementById("expiration").value.trim();
+      const cvv = document.getElementById("cvv").value.trim();
+
+      if (!nom || !numero || !expiration || !cvv) {
+        alert("Veuillez remplir tous les champs.");
+        return;
+      }
+
+      if (!/^\d{16}$/.test(numero)) {
+        alert("Le numéro de carte doit contenir exactement 16 chiffres.");
+        return;
+      }
+
+      if (!/^\d{3,4}$/.test(cvv)) {
+        alert("Le CVV doit contenir 3 ou 4 chiffres.");
+        return;
+      }
+
+      const [mois, annee] = expiration.split("/");
+      const maintenant = new Date();
+      const moisActuel = maintenant.getMonth() + 1;
+      const anneeActuelle = maintenant.getFullYear() % 100;
+
+      if (!mois || !annee || isNaN(mois) || isNaN(annee) || mois < 1 || mois > 12) {
+        alert("La date d'expiration est invalide.");
+        return;
+      }
+
+      if (parseInt(annee) < anneeActuelle || (parseInt(annee) === anneeActuelle && parseInt(mois) < moisActuel)) {
+        alert("La carte est expirée.");
+        return;
+      }
+
+      alert("Paiement validé avec succès !");
+      localStorage.removeItem("totalPanier");
+      window.location.href = "index.html";
+    });
+  </script>
+
+</body>
+</html>
